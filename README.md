@@ -105,6 +105,41 @@ of the products directly above its tag.
 > brand (e.g. "Amul" repeated across every dairy tag) the brand name bleeds into
 > neighbouring products. Kept as an opt-in for clean, non-repeating labels.
 
+## Sample outputs
+
+The pipeline's annotated outputs for the three provided shelf images. Green boxes
+are detected product facings + brand labels (with CLIP cosine score); orange
+overlays are the OCR'd shelf-edge price tags.
+
+### `img_1.jpg` — beverages (juices, sodas, energy drinks)
+
+![img_1 annotated](outputs/img_1_annotated.jpg)
+
+- **83 products** detected across **4 shelf rows**
+- Brand mix: Minute Maid 7, Tropicana 5, Coca-Cola 4, Fanta 4, Mirinda 4, Mountain Dew 4, Pepsi 4, Gatorade 4, Lipton 4, Nestea 4, B Natural 4, Real 4, Diet Coke 3, Thums Up 3, Sprite 3, Limca 3, 7UP 3, Red Bull 4, Nescafé 3, Amul 3, Paper Boat 2, Other 4 — see [outputs/img_1.json](outputs/img_1.json)
+- Prices read: ₹30, ₹34, ₹35, ₹40, ₹50, ₹55, ₹60, ₹75, ₹99, ₹105, ₹110, ₹125
+
+### `img_2.jpg` — snacks / biscuits
+
+![img_2 annotated](outputs/img_2_annotated.jpg)
+
+- **38 products** detected across **4 shelf rows**
+- Brand mix: Lay's 4, Uncle Chipps 3, Britannia 4, Bingo 4, Doritos 3, Good Day 3, Kurkure 3, Pringles 3, Parle 3, Cheetos 2, Oreo 2, Hide & Seek 2, Dark Fantasy 2, Other 3 — see [outputs/img_2.json](outputs/img_2.json)
+- Prices read: ₹10, ₹20, ₹28, ₹30, ₹99, ₹106
+
+### `img_3.jpg` — dairy (milk, yoghurt, butter, cheese)
+
+![img_3 annotated](outputs/img_3_annotated.jpg)
+
+- **72 products** detected across **5 shelf rows**
+- Brand mix: Amul 28, Danone 9, Nestlé 8, Yakult 6, Milky Mist 5, Hershey's 3, Epigamia 3, Mother Dairy 2, Britannia 2, Other 4 — see [outputs/img_3.json](outputs/img_3.json)
+- Prices read: ₹5, ₹20, ₹25, ₹28, ₹30, ₹35, ₹40, ₹45, ₹52, ₹54, ₹55, ₹58, ₹60, ₹62, ₹85, ₹120, ₹130
+
+> Outputs were measured against `data/ground_truth.json` — overall per-brand count
+> MAE 0.878. See [docs/MODEL_SELECTION.md](docs/MODEL_SELECTION.md) for the
+> accuracy↔speed reasoning and the discussion of known lookalike limitations
+> (Tropicana / Real / Minute Maid juice cartons).
+
 ## Project layout
 
 ```
