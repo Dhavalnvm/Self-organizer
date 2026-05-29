@@ -11,7 +11,7 @@ from .ocr import OCRItem
 
 
 def _draw_label(img: np.ndarray, text: str, x: int, y: int, color) -> None:
-    """Draw text with a filled background chip for legibility."""
+    # Draw text with a filled background chip for legibility.
     font = cv2.FONT_HERSHEY_SIMPLEX
     scale, thick = 0.4, 1
     (tw, th), base = cv2.getTextSize(text, font, scale, thick)
@@ -26,7 +26,7 @@ def annotate(
     brands: list[tuple[str, float]],
     ocr_items: list[OCRItem] | None = None,
 ) -> np.ndarray:
-    """Return a copy of ``image`` with detection and OCR overlays drawn."""
+    #Return a copy of ``image`` with detection and OCR overlays drawn.
     out = image.copy()
 
     # Product boxes + brand labels.
