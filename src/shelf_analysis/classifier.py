@@ -31,7 +31,7 @@ def _bgr_to_pil(crop: np.ndarray) -> Image.Image:
 
 
 class CLIPClassifier:
-    """Zero-shot brand classifier built on OpenAI CLIP (via transformers)."""
+    #Zero-shot brand classifier built on OpenAI CLIP (via transformers).
 
     def __init__(
         self,
@@ -107,7 +107,7 @@ class CLIPClassifier:
 
 
 class KNNClassifier:
-    """Cosine-KNN over the repo's embedding gallery (DINOv2 / ResNet18)."""
+    #Cosine-KNN over the repo's embedding gallery (DINOv2 / ResNet18).
 
     def __init__(
         self,
@@ -138,7 +138,7 @@ class KNNClassifier:
         self.knn = NearestNeighbors(metric="cosine", n_neighbors=k).fit(embeddings)
 
     def _build_embedder(self, backbone: str):
-        """Reuse the repo's Img2Vec* classes; return a PIL->vector callable."""
+        #Reuse the repo's Img2Vec* classes; return a PIL->vector callable.
         src_dir = config.REPO_ROOT / "src"
         if str(src_dir) not in sys.path:
             sys.path.insert(0, str(src_dir))
