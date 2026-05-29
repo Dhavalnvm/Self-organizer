@@ -13,29 +13,21 @@ from pathlib import Path
 
 import torch
 
-# --------------------------------------------------------------------------- #
 # Paths (resolved relative to the repo root: <repo>/src/shelf_analysis/config.py)
-# --------------------------------------------------------------------------- #
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODEL_PATH = REPO_ROOT / "models" / "best.pt"
 KNOWLEDGE_BASE_DIR = REPO_ROOT / "data" / "knowledge_base" / "crops" / "object"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "outputs"
 
-# --------------------------------------------------------------------------- #
 # Device — resolves to "cpu" on the provided venv (torch CPU build).
-# --------------------------------------------------------------------------- #
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# --------------------------------------------------------------------------- #
 # Detection
-# --------------------------------------------------------------------------- #
 DETECT_CONF = 0.35          # YOLO confidence threshold (raised to cut duplicate/partial boxes)
 DETECT_IOU = 0.45           # NMS IoU (slightly tighter to merge split facings)
 DETECT_MAX_DET = 1000       # plenty for a packed shelf
 
-# --------------------------------------------------------------------------- #
 # CLIP classifier
-# --------------------------------------------------------------------------- #
 CLIP_MODEL_NAME = "openai/clip-vit-base-patch32"
 OTHER_LABEL = "Other"
 # Open-set rejection on the RAW cosine similarity (not a peaked softmax, which
@@ -118,15 +110,11 @@ BRAND_PARENT = {
     "Kurkure": "PepsiCo", "Uncle Chipps": "PepsiCo",
 }
 
-# --------------------------------------------------------------------------- #
 # KNN fallback classifier
-# --------------------------------------------------------------------------- #
 KNN_N_NEIGHBORS = 5
 KNN_DEFAULT_BACKBONE = "dinov2"   # "dinov2" | "resnet18"
 
-# --------------------------------------------------------------------------- #
 # OCR
-# --------------------------------------------------------------------------- #
 OCR_LANGS = ["en"]
 OCR_MIN_CONF = 0.30
 CURRENCY = "₹"   # EasyOCR drops the glyph; we re-attach it to detected prices.
@@ -154,9 +142,7 @@ OCR_STOPWORDS = {
     "slim", "salted", "probiotic", "package",
 }
 
-# --------------------------------------------------------------------------- #
 # Visualization
-# --------------------------------------------------------------------------- #
 BOX_COLOR = (0, 200, 0)
 OCR_COLOR = (0, 140, 255)
 TEXT_COLOR = (255, 255, 255)
