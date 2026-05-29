@@ -12,7 +12,7 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 
 def load_image(path: str | Path) -> np.ndarray:
-    """Load an image as a BGR numpy array (OpenCV native)."""
+    #Load an image as a BGR numpy array (OpenCV native).
     img = cv2.imread(str(path))
     if img is None:
         raise FileNotFoundError(f"Could not read image: {path}")
@@ -20,7 +20,7 @@ def load_image(path: str | Path) -> np.ndarray:
 
 
 def list_images(path: str | Path) -> list[Path]:
-    """Return image paths for a file or directory input."""
+    #Return image paths for a file or directory input.
     p = Path(path)
     if p.is_dir():
         return sorted(q for q in p.iterdir() if q.suffix.lower() in IMAGE_EXTS)
