@@ -17,12 +17,10 @@ from .detector import Box
 
 
 def cluster_rows(boxes: list[Box], image_height: int) -> tuple[list[int], int]:
-    """Assign each box a shelf-row id (top row = 0). Returns (row_ids, n_rows).
-
-    Uses a simple gap-based split on sorted vertical centres: a new row starts
-    when the vertical gap to the previous facing exceeds a fraction of the median
-    facing height. This is robust to the number of rows without a fixed k.
-    """
+    # Assign each box a shelf-row id (top row = 0). Returns (row_ids, n_rows).
+    # Uses a simple gap-based split on sorted vertical centres: a new row starts
+    # when the vertical gap to the previous facing exceeds a fraction of the median
+    # facing height. This is robust to the number of rows without a fixed k.
     if not boxes:
         return [], 0
 
@@ -45,7 +43,7 @@ def cluster_rows(boxes: list[Box], image_height: int) -> tuple[list[int], int]:
 
 
 def share_of_shelf(boxes: list[Box], brands: list[str]) -> dict[str, str]:
-    """Per-brand share of linear shelf frontage, as percentage strings."""
+    # Per-brand share of linear shelf frontage, as percentage strings.
     if not boxes:
         return {}
     total_width = sum(b.width for b in boxes)
