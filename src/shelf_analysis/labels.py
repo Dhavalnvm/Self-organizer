@@ -33,11 +33,10 @@ def build_brand_keywords(
     brand_prompts: dict[str, list[str]] = config.BRAND_PROMPTS,
     stopwords: set[str] = config.OCR_STOPWORDS,
 ) -> dict[str, list[str]]:
-    """Derive distinctive lowercase keywords per brand from its name + prompts.
-
-    e.g. "Minute Maid" -> ["minute", "maid", "minutemaid"]; generic packaging
-    words ("juice", "carton", ...) are dropped so they don't cause cross-matches.
-    """
+    # Derive distinctive lowercase keywords per brand from its name + prompts.
+    # e.g. "Minute Maid" -> ["minute", "maid", "minutemaid"]; generic packaging
+    # words ("juice", "carton", ...) are dropped so they don't cause cross-matches.
+    
     keywords: dict[str, list[str]] = {}
     for brand, prompts in brand_prompts.items():
         words: set[str] = set()
@@ -54,7 +53,7 @@ _BRAND_KEYWORDS = build_brand_keywords()
 
 
 def match_brand(text: str) -> tuple[str | None, float]:
-    """Best brand match for one OCR token. Returns (brand|None, ratio[0..1])."""
+    #Best brand match for one OCR token. Returns (brand|None, ratio[0..1]).
     tok = _norm(text)
     if len(tok) < 3:
         return None, 0.0
@@ -72,7 +71,7 @@ def match_brand(text: str) -> tuple[str | None, float]:
 
 
 def extract_prices(items: list[OCRItem]) -> list[dict]:
-    """Standalone price tokens -> [{'price': int, 'text': '₹125', 'cx', 'cy'}]."""
+    #Standalone price tokens -> [{'price': int, 'text': '₹125', 'cx', 'cy'}].
     out: list[dict] = []
     for it in items:
         m = config.PRICE_REGEX.match(it.text)
@@ -88,12 +87,11 @@ def extract_prices(items: list[OCRItem]) -> list[dict]:
 
 
 def ocr_brand_for_boxes(boxes: list[Box], items: list[OCRItem]) -> list[str | None]:
-    """For each box, a confident OCR-voted brand (or None to keep CLIP).
-
-    Considers OCR tokens whose centre falls within the box's horizontal span and
-    within the box vertically or just below it (the shelf tag). Votes are weighted
-    by EasyOCR confidence x fuzzy ratio; the best vote wins if it clears the floor.
-    """
+    # For each box, a confident OCR-voted brand (or None to keep CLIP).
+    # Considers OCR tokens whose centre falls within the box's horizontal span and
+    # within the box vertically or just below it (the shelf tag). Votes are weighted
+    # by EasyOCR confidence x fuzzy ratio; the best vote wins if it clears the floor.
+    
     votes: list[str | None] = [None] * len(boxes)
     for bi, box in enumerate(boxes):
         x1, x2 = box.x1, box.x2
@@ -120,7 +118,7 @@ def ocr_brand_for_boxes(boxes: list[Box], items: list[OCRItem]) -> list[str | No
 def prices_by_brand(
     prices: list[dict], boxes: list[Box], brands: list[str]
 ) -> dict[str, str]:
-    """Associate each price tag with the brand of the nearest product above it."""
+    #Associate each price tag with the brand of the nearest product above it.
     result: dict[str, str] = {}
     for pr in prices:
         cx, cy = pr["cx"], pr["cy"]
