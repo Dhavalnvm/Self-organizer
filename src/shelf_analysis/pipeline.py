@@ -14,11 +14,9 @@ from .visualize import annotate
 
 
 class ShelfPipeline:
-    """Run all stages and assemble the business-metrics dict + annotated image.
-
-    The OCR stage is optional (it loads EasyOCR weights) so the pipeline can run
-    detection + classification standalone in smoke tests.
-    """
+    # Run all stages and assemble the business-metrics dict + annotated image.
+    # The OCR stage is optional (it loads EasyOCR weights) so the pipeline can run
+    # detection + classification standalone in smoke tests.
 
     def __init__(self, classifier, detector: ProductDetector | None = None, ocr=None,
                  ocr_brand_correct: bool = config.OCR_BRAND_CORRECTION) -> None:
