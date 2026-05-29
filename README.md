@@ -205,3 +205,94 @@ and misses (`pred=0, true>0`).
   reliable separation needs the KNN gallery path or a higher-resolution model.
 - **CPU-only**: first run downloads model weights; per-image latency is seconds,
   suitable for batch analytics. `DEVICE` auto-detects CUDA for GPU deployment.
+
+## Known flaws & wrong detections
+
+Everything below is **observed**, not hypothetical — collected from the three test
+images via `scripts/evaluate.py` and a manual audit of every gallery crop. The
+intent is to be honest about where the prototype is weak so the next iteration
+knows where to invest. Overall per-brand count **MAE = 0.878** against
+[`data/ground_truth.json`](data/ground_truth.json) — good for label-free zero-shot,
+not production-grade.
+
+### 1. Juice-carton lookalike confusion (biggest correctness issue)
+
+Tropicana / Real / Minute Maid / B Natural are all rectangular fruit-juice cartons
+with orange/fruit artwork. CLIP captures the *total* well but splits between them
+imperfectly — cosine scores hover at **0.28–0.32** (CLIP is barely sure):
+
+- `img_1` predicts **Minute Maid 7** vs GT **4** (over-counted by 3)
+- `img_1` predicts **Tropicana 5** vs GT **6** (the 1 missing went to Minute Maid)
+- In the seeding step, the audit caught **8 misplaced juice-carton crops** —
+  e.g. `img_1_b006`, `b009` (Real → labeled Minute Maid),
+  `img_1_b042`, `b043` (Tropicana → labeled Real),
+  `img_1_b038` (B Natural → labeled Tropicana).
+
+**Why it persists.** ViT-B/32 at low resolution can't reliably read the brand
+*text* on the carton, and "fruit juice carton" prompts collapse the three into a
+near-tie. Real fix: KNN gallery with a few labeled crops per brand, or a
+higher-resolution CLIP model.
+
+### 2. Cross-category leakage to visually-similar packs
+
+Even with the open-set `Other` threshold, a few wrong-aisle items slip through:
+
+- `img_1_b005` — Paper Boat juice bottle → labeled **Uncle Chipps**
+- `img_3_b028` — Hershey's milkshake → labeled **Nescafé** (both brown bottles)
+- `img_3_b020` — Britannia Cheese Slices → labeled **Good Day** (both red boxes)
+- `img_3_b061` — Nestle a+ small cup → labeled **Britannia**
+- `img_3_b038` — Danone Actimel → labeled **Milky Mist**
+- `img_3_b004`, `b005` — Mother Dairy bottles → labeled **Amul**
+
+These are visual cousins, not random errors — colour/shape similarity beats the
+weak brand-text signal.
+
+### 3. Out-of-taxonomy items get a wrong label instead of `Other`
+
+Anything CLIP scores ≥ 0.235 to *some* brand keeps that label, even if the real
+brand isn't in our prompt list. Observed:
+
+- **Go Cheese Slices** (`img_3_b031`) → forced into `nestle/`
+- **Malkist Masala** (`img_2_b004`) → forced into `britannia/`
+- **Malkist Cheese** (`img_2_b010`) → forced into `dark_fantasy/`
+
+Mitigations: raise `CLIP_SIM_THRESHOLD`, or extend `BRAND_PROMPTS` to cover these.
+
+### 4. Detection over-counts (small but real)
+
+YOLOv8/SKU110K occasionally splits one tall facing into two boxes, or detects
+shelf-edge gaps:
+
+- `img_1` detected **83 vs GT 78** (+5)
+- `img_2` detected **38 vs GT 36** (+2)
+- `img_3` Yakult: detected **6 vs GT 3** — the 5-bottle multipack got split.
+- `img_3` totals look high (72 vs GT 50) but the GT here did **not** enumerate the
+  bottom butter/cheese rows, so most of the gap is GT incompleteness, not error.
+
+### 5. `price_by_brand` inherits classification errors
+
+`price_by_brand` ties each price tag to the brand of the products above it. When
+those products were mislabeled, the price–brand mapping is also wrong:
+
+- `img_1` output: `"Tropicana": "₹99"` — but `₹99` is the **Real** tag.
+- `img_1` output: `"Minute Maid": "₹125"` — but `₹125` is the **Tropicana** tag.
+
+The *prices* themselves (in `ocr_labels`) are correct; only the brand attribution
+is downstream of the lookalike issue (1).
+
+### 6. `--ocr-brand-correct` is off by default — and for good reason
+
+Attempting to override CLIP with the OCR'd shelf-tag brand text **made the metric
+worse** in a measured A/B (MAE 0.878 → 1.180). In the Amul-dominated dairy aisle,
+the word "Amul" on every tag bled into neighbouring products — **Amul over-counted
+28 → 37** and Hershey's / Epigamia got flipped to Amul. Kept opt-in, not removed,
+for cleaner aisles.
+
+### 7. Categories where it works well (for balance)
+
+To be fair: `img_2` (snacks) finishes at **MAE 0.29** with most brands exact, and
+the entire `cocacola`, `sprite`, `fanta`, `mirinda`, `pepsi`, `mountain_dew`,
+`7up`, `lipton`, `nestea`, `lays`, `doritos`, `cheetos`, `kurkure`, `bingo`,
+`pringles`, `oreo`, `hide_seek`, `gatorade`, `yakult`, `danone`, `epigamia`,
+`mother_dairy` and `hersheys` audit passes came back **100% clean** — the failure
+modes above are concentrated in the lookalike + cross-category cases.
