@@ -1,0 +1,60 @@
+{
+  "image_name": "img_2.jpg",
+  "total_products": 38,
+  "brands": {
+    "Britannia": 4,
+    "Lay's": 4,
+    "Parle": 3,
+    "Doritos": 3,
+    "Good Day": 3,
+    "Kurkure": 3,
+    "Pringles": 3,
+    "Bingo": 3,
+    "Uncle Chipps": 3,
+    "Cheetos": 2,
+    "Oreo": 2,
+    "Hide & Seek": 2,
+    "Dark Fantasy": 2,
+    "Other": 1
+  },
+  "share_of_shelf": {
+    "Britannia": "12.9%",
+    "Lay's": "10.0%",
+    "Doritos": "8.5%",
+    "Parle": "8.3%",
+    "Uncle Chipps": "8.0%",
+    "Hide & Seek": "7.9%",
+    "Kurkure": "7.6%",
+    "Good Day": "6.9%",
+    "Dark Fantasy": "6.8%",
+    "Bingo": "6.8%",
+    "Oreo": "6.0%",
+    "Cheetos": "5.6%",
+    "Pringles": "4.4%",
+    "Other": "0.3%"
+  },
+  "num_shelf_rows": 4,
+  "ocr_labels": [
+    "₹10",
+    "₹20",
+    "₹28",
+    "₹30",
+    "₹99",
+    "₹106"
+  ],
+  "price_by_brand": {
+    "Lay's": "₹20",
+    "Doritos": "₹28",
+    "Cheetos": "₹20",
+    "Kurkure": "₹20",
+    "Uncle Chipps": "₹20",
+    "Bingo": "₹20",
+    "Pringles": "₹99",
+    "Parle": "₹10",
+    "Good Day": "₹20",
+    "Britannia": "₹20",
+    "Oreo": "₹20",
+    "Hide & Seek": "₹20",
+    "Dark Fantasy": "₹30"
+  }
+}

@@ -1,0 +1,7 @@
+ultralytics>=8.0.92
+transformers>=4.40.0
+easyocr>=1.7.0
+scikit-learn>=1.2.2
+
+# torch, torchvision, opencv-python, pillow, numpy are pulled in by the above
+# (already present in the provided CPU-only venv: torch==2.12.0+cpu)

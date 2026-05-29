@@ -1,0 +1,30 @@
+{
+  "_note": "Manual facing counts for evaluation, mapped to the pipeline's canonical brand names (e.g. Monaco+Parle-G -> Parle; Tiger+Marie Gold -> Britannia; Fab+Milano -> Hide & Seek; all Amul sub-brands -> Amul). Malkist has no taxonomy entry -> Other. img_3 lists the enumerated rows; bottom butter/cheese boxes were not counted.",
+  "img_1.jpg": {
+    "total_products": 78,
+    "brands": {
+      "Tropicana": 6, "Real": 5, "Minute Maid": 4, "Sprite": 3,
+      "Coca-Cola": 4, "Diet Coke": 3, "Thums Up": 3, "Fanta": 4,
+      "Limca": 3, "Nestea": 4, "Lipton": 4, "Mountain Dew": 4,
+      "7UP": 3, "Mirinda": 4, "Pepsi": 4, "B Natural": 4,
+      "Paper Boat": 3, "Gatorade": 4, "Red Bull": 3, "Nescafe": 3,
+      "Amul": 3
+    }
+  },
+  "img_2.jpg": {
+    "total_products": 36,
+    "brands": {
+      "Lay's": 4, "Doritos": 3, "Cheetos": 2, "Kurkure": 3,
+      "Uncle Chipps": 2, "Bingo": 3, "Pringles": 3, "Parle": 3,
+      "Good Day": 3, "Britannia": 3, "Oreo": 2, "Hide & Seek": 2,
+      "Dark Fantasy": 1, "Other": 2
+    }
+  },
+  "img_3.jpg": {
+    "total_products": 50,
+    "brands": {
+      "Nestle": 9, "Danone": 10, "Yakult": 3, "Amul": 20,
+      "Mother Dairy": 2, "Epigamia": 3, "Hershey's": 3
+    }
+  }
+}
