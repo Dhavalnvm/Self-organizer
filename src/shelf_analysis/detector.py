@@ -18,7 +18,7 @@ from . import config
 
 @dataclass
 class Box:
-    """A single detected product facing."""
+    #A single detected product facing.
 
     x1: float
     y1: float
@@ -47,7 +47,7 @@ class Box:
         return (self.y1 + self.y2) / 2.0
 
     def crop(self, image: np.ndarray) -> np.ndarray:
-        """Return the image region for this box (clamped to image bounds)."""
+        #Return the image region for this box (clamped to image bounds).
         h, w = image.shape[:2]
         x1 = max(0, int(self.x1))
         y1 = max(0, int(self.y1))
@@ -57,7 +57,7 @@ class Box:
 
 
 class ProductDetector:
-    """Detect product facings on a shelf image."""
+    #Detect product facings on a shelf image.
 
     def __init__(
         self,
@@ -74,7 +74,7 @@ class ProductDetector:
         self.device = device
 
     def detect(self, image: np.ndarray) -> list[Box]:
-        """Run detection on a BGR/RGB numpy image and return boxes."""
+        #Run detection on a BGR/RGB numpy image and return boxes.
         results = self.model.predict(
             source=image,
             conf=self.conf,
