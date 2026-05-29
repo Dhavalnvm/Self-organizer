@@ -35,10 +35,8 @@ class ShelfOCR:
         self.min_conf = min_conf
 
     def read(self, image: np.ndarray) -> list[OCRItem]:
-        """All text detections above the confidence threshold.
-
-        Price/brand parsing of these items lives in ``labels.py``.
-        """
+        # All text detections above the confidence threshold.
+        # Price/brand parsing of these items lives in ``labels.py``.
         items: list[OCRItem] = []
         for box, text, conf in self.reader.readtext(image):
             if conf < self.min_conf:
