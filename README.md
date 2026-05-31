@@ -53,6 +53,7 @@ data/test_images/
   img_1.jpg   # beverages (juices, sodas, energy drinks)
   img_2.jpg   # snacks / biscuits
   img_3.jpg   # dairy (milk, yoghurt, butter, cheese)
+  img_4.png   # beverages with visible out-of-stock gaps (OSA demo)
 ```
 
 ## Usage
@@ -88,16 +89,27 @@ For each input image the pipeline writes:
   "brands": { "Minute Maid": 7, "Tropicana": 5, "Coca-Cola": 4, "Other": 4 },
   "share_of_shelf": { "Minute Maid": "8.5%", "Tropicana": "6.0%" },
   "num_shelf_rows": 4,
+  "empty_slots": [
+    { "row": 1, "x1": 244, "y1": 246, "x2": 526, "y2": 439,
+      "width": 281, "est_missing_facings": 5 }
+  ],
+  "estimated_missing_facings": 5,
   "ocr_labels": ["₹30", "₹50", "₹99", "₹125"],
   "price_by_brand": { "Coca-Cola": "₹50", "Gatorade": "₹75", "Red Bull": "₹110" }
 }
 ```
 
 `image_name`, `total_products`, `brands`, `ocr_labels` satisfy the assignment's
-required schema; `share_of_shelf`, `num_shelf_rows` and `price_by_brand` are added
-insights. `ocr_labels` are the price tags read off the shelf edges (the `₹` glyph
-is re-attached — EasyOCR drops it); `price_by_brand` ties each price to the brand
-of the products directly above its tag.
+required schema; `share_of_shelf`, `num_shelf_rows`, `price_by_brand`,
+`empty_slots` and `estimated_missing_facings` are added insights.
+
+- `ocr_labels` — price tags read off the shelf edges (`₹` is re-attached;
+  EasyOCR drops the glyph).
+- `price_by_brand` — each price tied to the brand of the products above its tag.
+- `empty_slots` / `estimated_missing_facings` — **On-Shelf Availability (OSA)**:
+  per-row gaps between consecutive products that exceed one facing-width are
+  flagged as out-of-stock, with a count of how many facings would fit. Drawn on
+  the annotated image as red translucent rectangles labelled `EMPTY xN`.
 
 > **Note on `--ocr-brand-correct`:** using OCR'd shelf/pack text to override the
 > CLIP brand is *experimental and off by default*. Measured against
@@ -135,10 +147,21 @@ overlays are the OCR'd shelf-edge price tags.
 - Brand mix: Amul 28, Danone 9, Nestlé 8, Yakult 6, Milky Mist 5, Hershey's 3, Epigamia 3, Mother Dairy 2, Britannia 2, Other 4 — see [outputs/img_3.json](outputs/img_3.json)
 - Prices read: ₹5, ₹20, ₹25, ₹28, ₹30, ₹35, ₹40, ₹45, ₹52, ₹54, ₹55, ₹58, ₹60, ₹62, ₹85, ₹120, ₹130
 
-> Outputs were measured against `data/ground_truth.json` — overall per-brand count
-> MAE 0.878. See [docs/MODEL_SELECTION.md](docs/MODEL_SELECTION.md) for the
-> accuracy↔speed reasoning and the discussion of known lookalike limitations
-> (Tropicana / Real / Minute Maid juice cartons).
+### `img_4.png` — beverages with out-of-stock gaps (OSA demo)
+
+![img_4 annotated](outputs/img_4_annotated.jpg)
+
+- **68 products** detected across **4 shelf rows**
+- **5 empty slots, ~15 missing facings** — the big translucent red region in
+  row 1 is the depleted Coca-Cola / Diet Coke section; smaller gaps flagged on
+  the top Tropicana row and elsewhere. See [outputs/img_4.json](outputs/img_4.json)
+  for exact coordinates and per-slot facing counts.
+- Demonstrates the pipeline's **On-Shelf Availability** signal.
+
+> Outputs (img_1–img_3) were measured against `data/ground_truth.json` — overall
+> per-brand count MAE 0.878. See [docs/MODEL_SELECTION.md](docs/MODEL_SELECTION.md)
+> for the accuracy↔speed reasoning and the discussion of known lookalike
+> limitations (Tropicana / Real / Minute Maid juice cartons).
 
 ## Project layout
 
