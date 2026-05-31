@@ -14,9 +14,11 @@ from .visualize import annotate
 
 
 class ShelfPipeline:
-    # Run all stages and assemble the business-metrics dict + annotated image.
-    # The OCR stage is optional (it loads EasyOCR weights) so the pipeline can run
-    # detection + classification standalone in smoke tests.
+    """Run all stages and assemble the business-metrics dict + annotated image.
+
+    The OCR stage is optional (it loads EasyOCR weights) so the pipeline can run
+    detection + classification standalone in smoke tests.
+    """
 
     def __init__(self, classifier, detector: ProductDetector | None = None, ocr=None,
                  ocr_brand_correct: bool = config.OCR_BRAND_CORRECTION) -> None:
@@ -61,9 +63,10 @@ class ShelfPipeline:
             for it in ocr_items if config.PRICE_REGEX.match(it.text)
         ]
 
-        # 4. Shelf-space metrics.
-        _, n_rows = shelf_space.cluster_rows(boxes, h)
+        # 4. Shelf-space metrics + Out-of-Stock detection.
+        row_ids, n_rows = shelf_space.cluster_rows(boxes, h)
         sos = shelf_space.share_of_shelf(boxes, brand_labels)
+        empty_slots = shelf_space.find_empty_slots(boxes, row_ids, image.shape[1])
 
         # 5. Assemble metrics dict (superset of the assignment's required schema).
         brand_counts = dict(Counter(brand_labels).most_common())
@@ -73,9 +76,11 @@ class ShelfPipeline:
             "brands": brand_counts,
             "share_of_shelf": sos,
             "num_shelf_rows": n_rows,
+            "empty_slots": [s.to_dict() for s in empty_slots],
+            "estimated_missing_facings": sum(s.est_missing_facings for s in empty_slots),
             "ocr_labels": price_list,
             "price_by_brand": price_by_brand,
         }
 
-        annotated = annotate(image, boxes, predictions, price_items)
+        annotated = annotate(image, boxes, predictions, price_items, empty_slots)
         return metrics, annotated
