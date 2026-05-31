@@ -8,10 +8,11 @@ import numpy as np
 from . import config
 from .detector import Box
 from .ocr import OCRItem
+from .shelf_space import EmptySlot
 
 
 def _draw_label(img: np.ndarray, text: str, x: int, y: int, color) -> None:
-    # Draw text with a filled background chip for legibility.
+    """Draw text with a filled background chip for legibility."""
     font = cv2.FONT_HERSHEY_SIMPLEX
     scale, thick = 0.4, 1
     (tw, th), base = cv2.getTextSize(text, font, scale, thick)
@@ -25,9 +26,20 @@ def annotate(
     boxes: list[Box],
     brands: list[tuple[str, float]],
     ocr_items: list[OCRItem] | None = None,
+    empty_slots: list[EmptySlot] | None = None,
 ) -> np.ndarray:
-    #Return a copy of ``image`` with detection and OCR overlays drawn.
+    """Return a copy of ``image`` with detection, OCR and OOS overlays drawn."""
     out = image.copy()
+
+    # Empty / out-of-stock slots — drawn first so product boxes sit on top.
+    empty_color = (0, 0, 255)   # red (BGR)
+    for s in empty_slots or []:
+        # Translucent red fill so the gap is visible without hiding the image.
+        overlay = out.copy()
+        cv2.rectangle(overlay, (s.x1, s.y1), (s.x2, s.y2), empty_color, -1)
+        cv2.addWeighted(overlay, 0.25, out, 0.75, 0, out)
+        cv2.rectangle(out, (s.x1, s.y1), (s.x2, s.y2), empty_color, 2)
+        _draw_label(out, f"EMPTY x{s.est_missing_facings}", s.x1, s.y1, empty_color)
 
     # Product boxes + brand labels.
     for box, (brand, score) in zip(boxes, brands):
