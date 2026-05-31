@@ -64,12 +64,27 @@ products. This is a deliberate, measured decision — keep the reliable signal
 can be disabled with `--no-ocr`. PaddleOCR is comparable but adds a heavier
 dependency tree; Tesseract is faster but weaker on stylised tags.
 
-## 4. Shelf-space — geometric (no extra model)
+## 4. Shelf-space + Out-of-Stock — geometric (no extra model)
 
 Row clustering (1-D gap split on box y-centres) and Share-of-Shelf (per-brand
 sum of box widths) are pure geometry on the detections — zero added latency or
 weights. A segmentation model (SAM) would give pixel-accurate area but is far too
 slow on CPU for marginal business value here; noted as future work.
+
+**On-Shelf Availability (`find_empty_slots`).** Same family — pure geometry on
+the detections. Within each row, x-gaps between consecutive facings that exceed
+**one median facing-width** are flagged as out-of-stock, with the gap size
+divided by the median width giving an estimated count of missing facings. Edge
+gaps need ≥ 1.5× the median width before flagging so we don't mistake normal
+shelf-end whitespace for OOS.
+
+*Why not a dedicated OOS model?* "Empty-shelf detectors" exist but they add
+weights, latency, and a second labelled dataset. The gap heuristic costs
+microseconds, is interpretable (you can see *why* a gap was flagged), and was
+sufficient to correctly flag the depleted Coca-Cola section in `img_4` as 5
+missing facings plus a smaller 2-facing gap. Failure modes: an entire empty row
+disappears from `cluster_rows` (no boxes to anchor it), and stocked-but-tilted
+products may briefly look like gaps.
 
 ## CPU vs GPU summary
 
