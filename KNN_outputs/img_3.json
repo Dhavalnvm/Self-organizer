@@ -1,0 +1,59 @@
+{
+  "image_name": "img_3.jpg",
+  "total_products": 72,
+  "brands": {
+    "amul": 32,
+    "nestle": 10,
+    "danone": 10,
+    "yakult": 6,
+    "milky_mist": 4,
+    "hersheys": 3,
+    "epigamia": 3,
+    "minute_maid": 2,
+    "tropicana": 1,
+    "7up": 1
+  },
+  "share_of_shelf": {
+    "amul": "48.9%",
+    "nestle": "14.2%",
+    "danone": "10.5%",
+    "milky_mist": "7.3%",
+    "yakult": "5.8%",
+    "hersheys": "3.8%",
+    "tropicana": "3.2%",
+    "epigamia": "3.0%",
+    "7up": "2.6%",
+    "minute_maid": "0.7%"
+  },
+  "num_shelf_rows": 5,
+  "ocr_labels": [
+    "₹5",
+    "₹20",
+    "₹25",
+    "₹28",
+    "₹30",
+    "₹35",
+    "₹40",
+    "₹45",
+    "₹52",
+    "₹54",
+    "₹55",
+    "₹58",
+    "₹60",
+    "₹62",
+    "₹85",
+    "₹120",
+    "₹130"
+  ],
+  "price_by_brand": {
+    "nestle": "₹25",
+    "danone": "₹30",
+    "yakult": "₹28",
+    "amul": "₹62",
+    "epigamia": "₹45",
+    "hersheys": "₹40",
+    "7up": "₹60",
+    "milky_mist": "₹55",
+    "tropicana": "₹130"
+  }
+}

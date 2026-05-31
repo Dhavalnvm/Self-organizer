@@ -1,0 +1,57 @@
+{
+  "image_name": "img_2.jpg",
+  "total_products": 38,
+  "brands": {
+    "britannia": 7,
+    "lays": 4,
+    "doritos": 4,
+    "cheetos": 3,
+    "good_day": 3,
+    "kurkure": 3,
+    "pringles": 3,
+    "oreo": 2,
+    "parle": 2,
+    "hide_seek": 2,
+    "uncle_chipps": 2,
+    "bingo": 2,
+    "minute_maid": 1
+  },
+  "share_of_shelf": {
+    "britannia": "22.5%",
+    "doritos": "10.7%",
+    "lays": "10.0%",
+    "hide_seek": "8.3%",
+    "cheetos": "8.3%",
+    "kurkure": "7.6%",
+    "good_day": "6.9%",
+    "oreo": "6.0%",
+    "uncle_chipps": "5.3%",
+    "parle": "5.3%",
+    "bingo": "4.5%",
+    "pringles": "4.4%",
+    "minute_maid": "0.3%"
+  },
+  "num_shelf_rows": 4,
+  "ocr_labels": [
+    "₹10",
+    "₹20",
+    "₹28",
+    "₹30",
+    "₹99",
+    "₹106"
+  ],
+  "price_by_brand": {
+    "lays": "₹20",
+    "doritos": "₹28",
+    "cheetos": "₹20",
+    "kurkure": "₹20",
+    "uncle_chipps": "₹20",
+    "bingo": "₹20",
+    "pringles": "₹99",
+    "britannia": "₹10",
+    "parle": "₹10",
+    "good_day": "₹20",
+    "oreo": "₹20",
+    "hide_seek": "₹30"
+  }
+}
