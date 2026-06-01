@@ -34,29 +34,29 @@ flowchart TD
 | Shelf labels | `labels.py` | price regex + currency; column geometry; fuzzy brand match | `ocr_labels` (prices), `price_by_brand`; optional brand override |
 | Shelf-space | `shelf_space.py` | 1-D gap clustering on box y-centres; bbox-width share | `num_shelf_rows`, `share_of_shelf` |
 | Empty slots (OSA) | `shelf_space.py` (`find_empty_slots`) | per-row x-gap analysis vs median facing width | `empty_slots[]`, `estimated_missing_facings` |
-| Aggregation | `pipeline.py` | — | metrics dict |
+| Aggregation | `pipeline.py` | - | metrics dict |
 | Visualization | `visualize.py` | OpenCV drawing | annotated JPG (product boxes + brands + price tags + red `EMPTY xN` overlays) |
 
 ## Data flow
 
-1. **Detect** — `ProductDetector.detect(image)` returns a list of `Box(xyxy, conf)`.
+1. **Detect** - `ProductDetector.detect(image)` returns a list of `Box(xyxy, conf)`.
    The detector is class-agnostic: it finds *where* products are, not *what* they are.
-2. **Classify** — each box is cropped and passed to the active `BrandClassifier`.
+2. **Classify** - each box is cropped and passed to the active `BrandClassifier`.
    CLIP compares the crop's embedding against averaged text embeddings of each
    brand's prompts; the arg-max brand wins, or `Other` if confidence is low.
-3. **OCR + labels** — EasyOCR reads the whole image (price tags sit on shelf-edge
+3. **OCR + labels** - EasyOCR reads the whole image (price tags sit on shelf-edge
    strips); `labels.py` keeps the standalone price numbers (re-attaching `₹`) as
    `ocr_labels`, and ties each price to the brand of the products above it
    (`price_by_brand`). Optionally (off by default) it can override the CLIP brand
-   when on-pack/tag text confidently names a known brand — see MODEL_SELECTION.md.
-4. **Shelf-space** — boxes are clustered into rows by vertical position, and each
+   when on-pack/tag text confidently names a known brand - see MODEL_SELECTION.md.
+4. **Shelf-space** - boxes are clustered into rows by vertical position, and each
    brand's share of total box width gives Share-of-Shelf (SOS).
-5. **Empty-slot detection (OSA)** — within each shelf row, horizontal gaps between
+5. **Empty-slot detection (OSA)** - within each shelf row, horizontal gaps between
    consecutive products that exceed one median facing-width are flagged as
    out-of-stock. Each gap reports the bbox and an estimated count of missing
    facings (`gap_width / median_facing_width`). Edge gaps need to be ≥ 1.5× wider
    before flagging, so normal shelf-end whitespace isn't counted.
-6. **Aggregate & visualize** — counts, SOS, rows, prices, empty slots are
+6. **Aggregate & visualize** - counts, SOS, rows, prices, empty slots are
    assembled into the metrics dict; the annotated image overlays product boxes,
    brand labels, price tags, and translucent red `EMPTY xN` regions over the OOS
    gaps.
